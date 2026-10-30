@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --ember: 255 122 26;
+    --volt: 109 108 247;
+    --aqua: 92 200 255;
+  }
+  html {
+    background: #050507;
+    overflow-x: clip;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-stopped { overflow: hidden; }
+  body {
+    @apply bg-ink-950 font-sans text-mist-100 antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+  ::selection { background: rgb(var(--ember) / 0.85); color: #050507; }
+  :focus-visible {
+    outline: 2px solid rgb(var(--ember));
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  h1, h2, h3, h4 { @apply font-display; }
+}
+
+@layer components {
+  @media (hover: none), (pointer: coarse) {
+    .grain::after { display: none; }
+  }
+  .container-x { @apply mx-auto w-full max-w-[1320px] px-5 sm:px-8 lg:px-12; }
+
+  .glass {
+    /* No backdrop-filter: blurring what's behind every card on every scroll frame was the main jank source. */
+    background: linear-gradient(180deg, rgb(22 22 30 / 0.92), rgb(14 14 20 / 0.92));
+    border: 1px solid rgb(255 255 255 / 0.08);
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.22em] text-mist-400;
+  }
+  .eyebrow::before {
+    content: '';
+    @apply h-px w-6 bg-ember-500;
+  }
+
+  .text-gradient {
+    background: linear-gradient(100deg, #fff 10%, #ffb57a 45%, #ff7a1a 70%, #8b8cff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .chip {
+    @apply inline-flex items-center rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-mist-300;
+  }
+
+  /* Card with an animated glowing border that follows the pointer (--mx/--my set in JS). */
+  .glow-card { position: relative; isolation: isolate; }
+  .glow-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgb(var(--ember) / 0.55), rgb(var(--volt) / 0.25) 40%, transparent 70%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .glow-card:hover::before, .glow-card:focus-within::before { opacity: 1; }
+
+  .grain::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.045;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .grid-bg {
+    background-image:
+      linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse at center, #000 20%, transparent 75%);
+  }
+}
+
+@layer utilities {
+  .split-line { display: inline-block; overflow: hidden; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+  .split-inner { display: inline-block; will-change: transform; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+}
+
+@keyframes marquee { to { transform: translateX(-50%); } }
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+@keyframes float-y { 50% { transform: translateY(-10px); } }
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+
+.animate-marquee { animation: marquee 38s linear infinite; }
+.animate-pulse-ring { animation: pulse-ring 2s cubic-bezier(0.2, 0.6, 0.3, 1) infinite; }
+.animate-float { animation: float-y 6s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+.has-cursor, .has-cursor a, .has-cursor button, .has-cursor [data-cursor], .has-cursor [data-cursor-label] { cursor: none; }
+
+.flow-line {
+  background: repeating-linear-gradient(90deg, rgb(var(--ember) / 0.8) 0 4px, transparent 4px 8px);
+  background-size: 16px 1px;
+  animation: flow 0.8s linear infinite;
+}
+@keyframes flow { to { background-position: 16px 0; } }
